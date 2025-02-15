@@ -59,8 +59,6 @@ export const register = async(req, res)=>{
 
 }
 
-
-
 // create login function
 export const login  = async(req, res)=>{
     const {email, password} = req.body;
@@ -106,7 +104,6 @@ export const login  = async(req, res)=>{
 }
 
 // logout function
-
 export const logout = async(req, res)=>{
     try {
         res.clearCookie('token', {
@@ -119,5 +116,38 @@ export const logout = async(req, res)=>{
         return res.json({success: true, message:'Logget Out'})
     } catch (error) {
         return res.json({success:false, message: error.message});
+    }
+}
+
+export const sendVerifyOtp = async(req, res)=>{
+    try {
+
+        const {userId} = req.body;
+
+        const user = await userModel.findById(userId);
+
+        if (user.isAccountVerified) {
+            return res.json({success: false, message: 'Account already verified'})
+        }
+
+        // create otp
+        const otp =  String(Math.floor(100000 + Math.random() * 900000));
+
+        user.verifyOtp = otp;
+        user.verifyOtpExpireAt = Date.now() + 24 * 60 * 60 * 1000;
+
+        await user.save();
+
+        const mailOptions = {
+            from: process.env.SENDER_EMAIL,
+            to: user.email,
+            subject: 'Account Verification OTP',
+            text: `Your OTP us ${otp}. Verify your account using this OTP`
+        }
+
+        await transporter.sendMail(mailOptions);
+
+    } catch (error) {
+        res.json({success: false, message: error.message});
     }
 }
