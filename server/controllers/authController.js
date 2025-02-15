@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import userModel from '../models/userModel.js';
+import transporter from '../config/nodemailer.js';
 
 
 // create Register function
@@ -39,6 +40,16 @@ export const register = async(req, res)=>{
             samesite: process.env.NODE.ENV === 'production' ? 'none' : 'strict',
             maxAge: 7 * 24 * 60 * 1000
         });
+
+        // send welcome email to the user
+        const mailOptions = {
+            from: process.env.SENDER_EMAIL,
+            to: email,
+            subject: 'Welcome to Easir Arafat',
+            text: `Welcome to Easir Arafat MERN AUTHENTICATION. Your account has been created with email id: ${email}`
+        }
+
+        await transporter.sendMail(mailOptions);
 
         return res.json({success: true});
 
