@@ -1,12 +1,24 @@
 import React, { useState } from "react";
 import { assets } from "../assets/assets";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+
+  const navigate = useNavigate();
+
   const [state, setState] = useState("Sign Up");
+
+  const [name, setName] = useState("");
+
+  const [email, setEmail] = useState("");
+
+  const [password, setPassword] = useState("");
+
 
   return (
     <div className="flex items-center justify-center min-h-screen px-6 sm:px-0 bg-gradient-to-br from-blue-200 to-purple-400">
       <img
+        onClick={()=>navigate('/')}
         src={assets.logo}
         alt=""
         className="absolute left-5 sm:left-20 top-5 w-28 sm=w-32 cursor-pointer"
@@ -27,7 +39,8 @@ const Login = () => {
               <input
                 className="bg-transparent outline-none text-white"
                 type="text"
-                name=""
+                onChange={(e)=> setName(e.target.value)}
+                value={name}
                 id=""
                 placeholder="Full Name"
                 required
@@ -41,7 +54,8 @@ const Login = () => {
             <input
               className="bg-transparent outline-none text-white"
               type="email"
-              name=""
+              onChange={(e)=>setEmail(e.target.value)}
+              value={email}
               id=""
               placeholder="Email ID"
               required
@@ -53,16 +67,17 @@ const Login = () => {
             <input
               className="bg-transparent outline-none text-white"
               type="password"
-              name=""
+              onChange={(e)=>setPassword(e.target.value)}
+              value={password}
               id=""
               placeholder="Password"
               required
             />
           </div>
 
-          <p className="mb-4 text-indigo-500 cursor-pointer">
+          <button onClick={()=>navigate('/reset-password')} className="mb-4 text-indigo-500">
             Forgot Password?
-          </p>
+          </button>
 
           <button className="w-full py-2.5 rounded-full bg-gradient-to-r from-indigo-500 to-indigo-900 text-white font-medium">
             {state}
