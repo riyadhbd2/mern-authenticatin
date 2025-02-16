@@ -1,16 +1,26 @@
-import { createContext } from "react";
+
+import { createContext, useState } from "react";
 
 export const AppContext = createContext();
 
-const value = {
+export const AppContextProvider = ({ children }) => {
     
-}
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-export const AppContextProvider = ({children}) =>{
+    const [isLoggedin, setIsLoggedin] = useState(false);
+    const [userData, setUserData] = useState(null);
+
+    const value = {
+        backendUrl,
+        isLoggedin, setIsLoggedin,
+        userData, setUserData
+    };
+
     return (
-        <AppContextProvider value={value}>
+        <AppContext.Provider value={value}>
             {children}
-        </AppContextProvider>
-    )
-}
+        </AppContext.Provider>
+    );
+};
+
 
