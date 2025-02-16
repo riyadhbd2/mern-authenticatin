@@ -1,13 +1,13 @@
+import  axios  from "axios";
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { assets } from "../assets/assets";
 import { AppContext } from "../context/AppContex";
-import axios from 'axios';
 
 const Login = () => {
   const navigate = useNavigate();
 
-  const { backendUrl, setIsLoggedin } = useContext(AppContext);
+  const { setIsLoggedin, getUserData } = useContext(AppContext);
 
   const [state, setState] = useState("Sign Up");
 
@@ -17,15 +17,46 @@ const Login = () => {
 
   const [password, setPassword] = useState("");
 
-  const onSubmitHandler = async () => {
+  // "http://localhost:6007/api/auth/register"
+
+  const onSubmitHandler = async (e) => {
+    e.preventDefault();
     try {
-      e.preventDefault();
+      axios.defaults.withCredentials = true;
+
+      // call post register api
       if (state === "Sign Up") {
-        
+        const { data } = await axios.post(
+          "http://localhost:6007/api/auth/register",
+          { name, email, password }
+        );
+
+        if (data.success) {
+          setIsLoggedin(true);
+          getUserData();
+          navigate("/");
+        } else {
+          alert(data.message);
+        }
       } else {
+        // call post login api
+        const { data } = await axios.post(
+          "http://localhost:6007/api/auth/login",
+          { email, password }
+        );
+
+        console.log(data);
+
+        if (data.success) {
+          setIsLoggedin(true);
+          getUserData();
+          navigate("/");
+        } else {
+          alert("Problem");
+        }
       }
     } catch (error) {
-
+      alert(error.message);
     }
   };
 
