@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import userModel from '../models/userModel.js';
 import transporter from '../config/nodemailer.js';
+import { EMAIL_VERIFY_TEMPLATE, PASSWORD_RESET_TEMPLATE } from '../config/emailTemplates.js';
 
 
 
@@ -52,7 +53,7 @@ export const register = async(req, res)=>{
 
         await transporter.sendMail(mailOptions);
 
-        return res.json({success: true});
+        return res.json({success: true, message: 'User register successfully'});
 
     } catch (error) {
         res.json({success: false, message: error.message})
@@ -97,7 +98,7 @@ export const login  = async(req, res)=>{
             maxAge: 7 * 24 * 60 * 1000
         });
 
-        return res.json({success: true});
+        return res.json({success: true, message: 'User login Successfully'});
         
     } catch (error) {
         return res.json({success:false, message:error.message})
@@ -144,7 +145,8 @@ export const sendVerifyOtp = async(req, res)=>{
             from: process.env.SENDER_EMAIL,
             to: user.email,
             subject: 'Account Verification OTP',
-            text: `Your OTP us ${otp}. Verify your account using this OTP`
+            // text: `Your OTP us ${otp}. Verify your account using this OTP`,
+            html: EMAIL_VERIFY_TEMPLATE.replace("{{otp}}", otp).replace("{{email}}", user.email)
         }
 
         await transporter.sendMail(mailOption);
@@ -206,6 +208,7 @@ export const isAuthenticated = async (req, res)=>{
 
 // Send password reset OTP
 export const sendResetOtp = async (req, res)=>{
+
     const {email} = req.body;
 
     if (!email) {
@@ -232,12 +235,13 @@ export const sendResetOtp = async (req, res)=>{
                 from: process.env.SENDER_EMAIL,
                 to: user.email,
                 subject: 'Password Reset OTP',
-                text: `Your OTP is ${otp}. Reset your password using this OTP`
-            }
+                // text: `Your OTP is ${otp}. Reset your password using this OTP`,
+                html: PASSWORD_RESET_TEMPLATE.replace("{{otp}}", otp).replace("{{email}}", user.email)
+            };
 
             await transporter.sendMail(mailOption);
 
-            return res,json({success: true, message: 'OTP sent to your email'});
+            return res.json({success: true, message: 'OTP sent to your email'});
 
         
     } catch (error) {
@@ -248,9 +252,10 @@ export const sendResetOtp = async (req, res)=>{
 
 // reset password
 export const resetPassword = async (req, res) =>{
-    const {email, otp, newPassword} = req.bosy;
 
-    if(!email || !otp || !password){
+    const {email, otp, newPassword} = req.body;
+
+    if(!email || !otp || !newPassword){
         return res.json({success: false, message: 'Email, OTP and password are required'})
     }
     try {
@@ -261,11 +266,11 @@ export const resetPassword = async (req, res) =>{
             return res.json({success: false, message: 'User not found'})
         }
 
-        if(user.resetotp === '' || user.resetOtp !== otp){
+        if(user.resetOtp === '' || user.resetOtp !== otp){
             return res.json({success:false, message: 'Invalid OTP'})
         }
 
-        if(user.resetOtpExpireAt > Date.now()){
+        if(user.resetOtpExpireAt < Date.now()){
             return res.json({success: false, message: 'OTP Expired'})
         }
 
