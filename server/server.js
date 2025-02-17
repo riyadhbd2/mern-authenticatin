@@ -13,15 +13,25 @@ const port = process.env.PORT || 6007;
 // call the mongodb connection function
 connectDB();
 
-const allowedOrigins = ['http://localhost:5174']
+const allowedOrigins = [process.env.FRONTEND_URL,'http://localhost:5174']
 
 // middle ware for all api
 app.use(express.json());
 app.use(cookieParser());
+// app.use(cors({
+//     origin: allowedOrigins,
+//     credentials:true
+// }))
 app.use(cors({
-    origin: allowedOrigins,
-    credentials:true
-}))
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
+    credentials: true
+}));
 
 // API Endpoints
 app.get('/', (req, res)=>{
