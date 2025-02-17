@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { assets } from "../assets/assets";
 import { useNavigate } from 'react-router-dom';
 import { AppContext } from "../context/AppContex";
@@ -58,6 +58,11 @@ const EmailVerify = () => {
       alert(error.message)
     }
   } 
+
+  // prevent to go verify-email page if loggedin
+  useEffect(()=>{
+    isLoggedin && userData && userData.isAccountVerified && navigate('/')
+  },[isLoggedin, userData])
 
 
   return (
