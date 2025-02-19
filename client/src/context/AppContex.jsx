@@ -13,7 +13,7 @@ export const AppContextProvider = ({ children }) => {
   const getAuthState = async () => {
     try {
       const { data } = await axios.get(
-        "http://localhost:6007/api/auth/is-auth"
+        `${import.meta.env.VITE_BACKEND_BASEURL}/api/auth/is-auth`
       );
 
       if (data.success) {
@@ -32,7 +32,7 @@ export const AppContextProvider = ({ children }) => {
   //Function to get user data
   const getUserData = async () => {
     try {
-      const { data } = await axios.get("http://localhost:6007/api/user/data");
+      const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_BASEURL}/api/user/data`);
       data.success ? setUserData(data.userData) : alert(data.message);
       console.log(data);
       console.log(userData);

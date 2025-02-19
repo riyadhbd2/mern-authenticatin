@@ -52,7 +52,7 @@ const ResetPassword = () => {
     e.preventDefault();
     try {
       const { data } = await axios.post(
-        "http://localhost:6007/api/auth/send-reset-otp",
+        `${import.meta.env.VITE_BACKEND_BASEURL}/api/auth/send-reset-otp`,
         { email }
       );
       data.success ? alert(data.message) : alert(data.message);
@@ -74,7 +74,7 @@ const ResetPassword = () => {
   const onSubmitNewPassword = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.post("http://localhost:6007/api/auth/reset-password",{email, otp, newPassword})
+      const { data } = await axios.post(`${import.meta.env.VITE_BACKEND_BASEURL}/api/auth/reset-password`,{email, otp, newPassword})
       data.success ? alert(data.message) : alert(data.message);
       data.success && navigate("/login");
     } catch (error) {

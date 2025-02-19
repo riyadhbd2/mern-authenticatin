@@ -46,7 +46,7 @@ const EmailVerify = () => {
       const otpArray = inputRefs.current.map(e => e.value);
       const otp = otpArray.join('');
 
-      const {data} = await axios.post("http://localhost:6007/api/auth/verify-account", {otp})
+      const {data} = await axios.post(`${import.meta.env.VITE_BACKEND_BASEURL}/api/auth/verify-account`, {otp})
       if (data.success) {
         alert(data.message);
         getUserData();

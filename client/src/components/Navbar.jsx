@@ -16,7 +16,7 @@ const Navbar = () => {
 
       axios.defaults.withCredentials = true;
 
-      const {data} = await axios.post("http://localhost:6007/api/auth/send-verify-otp")
+      const {data} = await axios.post(`${import.meta.env.VITE_BACKEND_BASEURL}/api/auth/send-verify-otp`)
 
       if (data.success) {
         navigate('/email-verify')
@@ -35,7 +35,7 @@ const Navbar = () => {
 
       axios.defaults.withCredentials = true
 
-      const {data} = await axios.post("http://localhost:6007/api/auth/logout")
+      const {data} = await axios.post(`${import.meta.env.VITE_BACKEND_BASEURL}/api/auth/logout`)
 
       data.success && setIsLoggedin(false)
       data.success && setUserData(false)

@@ -17,7 +17,7 @@ const Login = () => {
 
   const [password, setPassword] = useState("");
 
-  // "http://localhost:6007/api/auth/register"
+
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
@@ -27,7 +27,7 @@ const Login = () => {
       // call post register api
       if (state === "Sign Up") {
         const { data } = await axios.post(
-          "http://localhost:6007/api/auth/register",
+          `${import.meta.env.VITE_BACKEND_BASEURL}/api/auth/register`,
           { name, email, password }
         );
 
@@ -41,7 +41,7 @@ const Login = () => {
       } else {
         // call post login api
         const { data } = await axios.post(
-          "http://localhost:6007/api/auth/login",
+          `${import.meta.env.VITE_BACKEND_BASEURL}/api/auth/login`,
           { email, password }
         );
 
