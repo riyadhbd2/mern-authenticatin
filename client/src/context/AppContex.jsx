@@ -9,6 +9,8 @@ export const AppContextProvider = ({ children }) => {
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [userData, setUserData] = useState(null);
 
+  console.log(import.meta.env.VITE_BACKEND_BASEURL);
+
   //   Function to determine loggedin or not
   const getAuthState = async () => {
     try {
