@@ -18,7 +18,7 @@ connectDB();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-    origin: ['http://localhost:5175', ''],// Explicitly allow this origin
+    origin: ['http://localhost:5175', 'https://mern-authenticatin-client.vercel.app'],// Explicitly allow this origin
     credentials: true, // Allow credentials (cookies, headers)
   }));
 
