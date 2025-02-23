@@ -29,7 +29,7 @@ app.use(cookieParser());
 
 // Allow requests from your client's domain
 const corsOptions = {
-  origin: "https://mern-authenticatin-oe2r-aq939125l-easir-arafats-projects.vercel.app", // Replace with your client's URL
+  origin: "https://mern-authenticatin-client.vercel.app", // Replace with your client's URL
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true, // Allow cookies and credentials
 };
