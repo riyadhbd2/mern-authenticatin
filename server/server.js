@@ -13,29 +13,29 @@ const port = process.env.PORT || 6007;
 // call the mongodb connection function
 connectDB();
 
-const allowedOrigins = ['https://mern-authenticatin-oe2r.vercel.app',
+const allowedOrigins = ['https://mern-authenticatin-oe2r-a6rr2srdd-easir-arafats-projects.vercel.app/',
 'http://localhost:5174']
 
 // middle ware for all api
 app.use(express.json());
 app.use(cookieParser());
-// app.use(cors({
-//     origin: allowedOrigins,
-//     credentials:true
-// }))
 app.use(cors({
-    origin: (origin, callback) => {
-        console.log("CORS Origin:", origin);
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error("Not allowed by CORS"));
-        }
-    },
-    credentials: true,
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
-}));
+    origin: allowedOrigins,
+    credentials:true
+}))
+// app.use(cors({
+//     origin: (origin, callback) => {
+//         console.log("CORS Origin:", origin);
+//         if (!origin || allowedOrigins.includes(origin)) {
+//             callback(null, true);
+//         } else {
+//             callback(new Error("Not allowed by CORS"));
+//         }
+//     },
+//     credentials: true,
+//     allowedHeaders: ['Content-Type', 'Authorization'],
+//     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+// }));
 
 
 // API Endpoints
