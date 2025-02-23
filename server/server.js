@@ -13,7 +13,8 @@ const port = process.env.PORT || 6007;
 // call the mongodb connection function
 connectDB();
 
-const allowedOrigins = [process.env.FRONTEND_URL,'http://localhost:5174']
+const allowedOrigins = ['https://mern-authenticatin-oe2r.vercel.app',
+'http://localhost:5174']
 
 // middle ware for all api
 app.use(express.json());
