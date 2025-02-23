@@ -25,14 +25,18 @@ app.use(cookieParser());
 // }))
 app.use(cors({
     origin: (origin, callback) => {
+        console.log("CORS Origin:", origin);
         if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
             callback(new Error("Not allowed by CORS"));
         }
     },
-    credentials: true
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }));
+
 
 // API Endpoints
 app.get('/', (req, res)=>{
