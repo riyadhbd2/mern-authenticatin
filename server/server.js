@@ -12,7 +12,7 @@ const port = 6007;
 // call the mongodb connection function
 connectDB();
 
-// middle ware for all api
+// middle ware for all api is
 app.use(express.json());
 app.use(cookieParser());
 
