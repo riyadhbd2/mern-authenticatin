@@ -7,7 +7,7 @@ import authRouter from "./routes/authRoutes.js";
 import userRouter from "./routes/userRoutes.js";
 
 const app = express();
-const port = process.env.PORT || 6007;
+const port = 6007;
 
 // call the mongodb connection function
 connectDB();
