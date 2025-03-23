@@ -1,4 +1,3 @@
-import 'dotenv/config';
 
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
