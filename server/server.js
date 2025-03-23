@@ -19,12 +19,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 // cors
-app.use(cors({
-    origin: ['http://localhost:5175', 'https://mern-authenticatin-client.vercel.app'],
-    credentials: true, // Allow credentials (cookies, headers)
-  }));
-
-
+app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
 
 // API Endpoints
 app.get("/", (req, res) => {
