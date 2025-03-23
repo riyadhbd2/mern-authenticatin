@@ -2,8 +2,9 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { assets } from "../assets/assets";
+import { toast } from 'react-toastify';
 
-const ResetPassword = () => {
+const ResetPassword = ({url}) => {
   
 
   axios.defaults.withCredentials = true;
@@ -52,13 +53,13 @@ const ResetPassword = () => {
     e.preventDefault();
     try {
       const { data } = await axios.post(
-        `${import.meta.env.VITE_BACKEND_BASEURL}/api/auth/send-reset-otp`,
+        `${url}/api/auth/send-reset-otp`,
         { email }
       );
-      data.success ? alert(data.message) : alert(data.message);
+      data.success ? toast.success(data.message) : toast.error(data.message);
       data.success && setIsEmailSent(true);
     } catch (error) {
-      alert(error.message);
+      toast.error(error.message);
     }
   };
 
@@ -74,11 +75,11 @@ const ResetPassword = () => {
   const onSubmitNewPassword = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.post(`${import.meta.env.VITE_BACKEND_BASEURL}/api/auth/reset-password`,{email, otp, newPassword})
-      data.success ? alert(data.message) : alert(data.message);
+      const { data } = await axios.post(`${url}/api/auth/reset-password`,{email, otp, newPassword})
+      data.success ? toast.success(data.message) : toast.error(data.message);
       data.success && navigate("/login");
     } catch (error) {
-      alert(error.message);
+      toast.error(error.message);
     }
   };
 

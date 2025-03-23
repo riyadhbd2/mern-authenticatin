@@ -1,10 +1,12 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { assets } from "../assets/assets";
 import { AppContext } from "../context/AppContex";
 import axios from "axios";
+import { toast } from 'react-toastify';
 
-const Navbar = () => {
+
+const Navbar = ({url}) => {
 
   const navigate = useNavigate();
 
@@ -16,16 +18,16 @@ const Navbar = () => {
 
       axios.defaults.withCredentials = true;
 
-      const {data} = await axios.post(`${import.meta.env.VITE_BACKEND_BASEURL}/api/auth/send-verify-otp`)
+      const {data} = await axios.post(`${url}/api/auth/send-verify-otp`)
 
       if (data.success) {
         navigate('/email-verify')
-        alert(data.message)
+        toast.success(data.message)
       } else{
-        alert(data.message)
+        toast.error(data.message)
       }
     } catch (error) {
-      alert(error.message)
+      toast.error(error.message)
     }
   }
 
@@ -35,13 +37,13 @@ const Navbar = () => {
 
       axios.defaults.withCredentials = true
 
-      const {data} = await axios.post(`${import.meta.env.VITE_BACKEND_BASEURL}/api/auth/logout`)
+      const {data} = await axios.post(`${url}/api/auth/logout`)
 
       data.success && setIsLoggedin(false)
       data.success && setUserData(false)
 
     } catch (error) {
-      alert(error.message);
+      toast.error(error.message);
     }
   }
 

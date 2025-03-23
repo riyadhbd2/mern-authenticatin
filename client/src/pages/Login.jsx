@@ -1,10 +1,12 @@
 import  axios  from "axios";
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { assets } from "../assets/assets";
 import { AppContext } from "../context/AppContex";
+import { toast } from 'react-toastify';
 
-const Login = () => {
+
+const Login = ({url}) => {
   const navigate = useNavigate();
 
   const { setIsLoggedin, getUserData } = useContext(AppContext);
@@ -26,8 +28,7 @@ const Login = () => {
 
       // call post register api
       if (state === "Sign Up") {
-        const { data } = await axios.post(
-          `${import.meta.env.VITE_BACKEND_BASEURL}/api/auth/register`,
+        const { data } = await axios.post(`${url}/api/register`,
           { name, email, password }
         );
 
@@ -36,12 +37,12 @@ const Login = () => {
           getUserData();
           navigate("/");
         } else {
-          alert(data.message);
+          toast.error(data.message);
         }
       } else {
         // call post login api
         const { data } = await axios.post(
-          `${import.meta.env.VITE_BACKEND_BASEURL}/api/auth/login`,
+          `${url}/api/auth/login`,
           { email, password }
         );
 
@@ -52,11 +53,11 @@ const Login = () => {
           getUserData();
           navigate("/");
         } else {
-          alert("Problem");
+          toast.error(data.message);
         }
       }
     } catch (error) {
-      alert(error.message);
+      toast.error(error.message);
     }
   };
 
