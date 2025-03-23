@@ -1,6 +1,6 @@
-import "dotenv/config";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import "dotenv/config";
 import express from "express";
 import connectDB from "./config/mongodb.js";
 import authRouter from "./routes/authRoutes.js";
@@ -12,14 +12,12 @@ const port = 6007;
 // call the mongodb connection function
 connectDB();
 
-
-
 // middle ware for all api
 app.use(express.json());
 app.use(cookieParser());
 
 // cors
-app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
+app.use(cors({ origin: "https://mern-authenticatin-frontend.vercel.app/", credentials: true }));
 
 // API Endpoints
 app.get("/", (req, res) => {
