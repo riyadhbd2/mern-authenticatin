@@ -39,7 +39,7 @@ export const register = async(req, res)=>{
         res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            samesite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
             maxAge: 7 * 24 * 60 * 60 * 1000 
         });
 
@@ -94,7 +94,7 @@ export const login  = async(req, res)=>{
         res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            samesite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
             maxAge: 7 * 24 * 60 * 60 * 1000 
         });
 
@@ -111,7 +111,7 @@ export const logout = async(req, res)=>{
         res.clearCookie('token', {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            samesite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
             maxAge: 7 * 24 * 60 * 60 * 1000 
         })
 
@@ -198,13 +198,25 @@ export const verifyEmail = async(req, res) => {
 }
 
 // check user is signedin or not
-export const isAuthenticated = async (req, res)=>{
+import jwt from 'jsonwebtoken';
+
+export const isAuthenticated = async (req, res) => {
     try {
-        return res.json({success: true});
+        const token = req.cookies.token;
+
+        if (!token) {
+            return res.json({ success: false, message: 'Not authenticated' });
+        }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = decoded; // Store user in req
+
+        return res.json({ success: true, user: decoded });
     } catch (error) {
-        res.json({sucess:false, message: error.message})
+        return res.json({ success: false, message: 'Invalid token' });
     }
-}
+};
+
 
 // Send password reset OTP
 export const sendResetOtp = async (req, res)=>{
