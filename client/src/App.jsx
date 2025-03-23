@@ -1,4 +1,3 @@
-import 'dotenv/config'
 import { Route, Routes } from "react-router-dom";
 import EmailVerify from "./pages/EmailVerify";
 import Home from "./pages/Home";

@@ -5,51 +5,55 @@ import { AppContext } from "../context/AppContex";
 import axios from "axios";
 import { toast } from 'react-toastify';
 
-
-const Navbar = ({url}) => {
-
+const Navbar = ({ url }) => {
   const navigate = useNavigate();
-
   const { userData, setUserData, setIsLoggedin } = useContext(AppContext);
 
-  // email verify function
-  const sendVerificationOtp = async() =>{
+  console.log("Navbar API URL:", url); // Debugging
+
+  // Email verification
+  const sendVerificationOtp = async () => {
     try {
+      console.log("Sending OTP to:", `${url}/api/auth/send-verify-otp`);
 
-      axios.defaults.withCredentials = true;
+      const { data } = await axios.post(`${url}/api/auth/send-verify-otp`, {}, { withCredentials: true });
 
-      const {data} = await axios.post(`${url}/api/auth/send-verify-otp`)
+      console.log("OTP Response:", data);
 
       if (data.success) {
-        navigate('/email-verify')
-        toast.success(data.message)
-      } else{
-        toast.error(data.message)
+        navigate('/email-verify');
+        toast.success(data.message);
+      } else {
+        toast.error(data.message);
       }
     } catch (error) {
-      toast.error(error.message)
+      console.error("API Error:", error);
+      toast.error(error.response ? error.response.data.message : error.message);
     }
-  }
+  };
 
-  // logout function
-  const logout = async() =>{
+  // Logout function
+  const logout = async () => {
     try {
+      console.log("Logging out from:", `${url}/api/auth/logout`);
 
-      axios.defaults.withCredentials = true
+      const { data } = await axios.post(`${url}/api/auth/logout`, {}, { withCredentials: true });
 
-      const {data} = await axios.post(`${url}/api/auth/logout`)
+      console.log("Logout Response:", data);
 
-      data.success && setIsLoggedin(false)
-      data.success && setUserData(false)
-
+      if (data.success) {
+        setIsLoggedin(false);
+        setUserData(null);
+      }
     } catch (error) {
-      toast.error(error.message);
+      console.error("Logout Error:", error);
+      toast.error(error.response ? error.response.data.message : error.message);
     }
-  }
+  };
 
   return (
     <div className="w-full flex justify-between items-center p-4 sm:p-6 sm:px-24 absolute top-0">
-      <img src={assets.logo} alt="" className="w-28 sm:w-32" />
+      <img src={assets.logo} alt="Logo" className="w-28 sm:w-32" />
 
       {userData ? (
         <div className="w-8 h-8 flex justify-center items-center rounded-full bg-black text-white relative group">
@@ -59,7 +63,7 @@ const Navbar = ({url}) => {
             <ul className="list-none m-0 p-2 bg-gray-100 text-sm">
               {!userData.isAccountVerified && (
                 <li onClick={sendVerificationOtp} className="py-1 px-2 hover:bg-gray-200 cursor-pointer">
-                  Verify email
+                  Verify Email
                 </li>
               )}
               <li onClick={logout} className="py-1 px-2 hover:bg-gray-200 cursor-pointer pr-10">
@@ -71,7 +75,7 @@ const Navbar = ({url}) => {
       ) : (
         <button
           onClick={() => navigate("/login")}
-          className="flex items-center gap-2 border  border-gray-500 rounded-full px-6 py-2 text-gray-800 hover:bg-gray-100"
+          className="flex items-center gap-2 border border-gray-500 rounded-full px-6 py-2 text-gray-800 hover:bg-gray-100"
         >
           Login <img src={assets.arrow_icon} alt="" />
         </button>

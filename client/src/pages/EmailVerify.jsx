@@ -1,90 +1,101 @@
-import { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { assets } from "../assets/assets";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppContex";
 import axios from "axios";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
-
-const EmailVerify = ({url}) => {
-
+const EmailVerify = ({ url }) => {
+  // Set axios default configuration
   axios.defaults.withCredentials = true;
 
-  const {isLoggedin, userData, getUserData } = useContext(AppContext);
-
+  const { isLoggedin, userData, getUserData } = useContext(AppContext);
   const navigate = useNavigate();
 
-  const inputRefs = React.useRef([])
+  // Reference to all the input fields for OTP
+  const inputRefs = useRef([]);
 
-  // to go to next array automatically
+  // Automatically focus next input field after entering a value
   const handleInput = (e, index) => {
-    if(e.target.value.length > 0 && index < inputRefs.current.length - 1){
+    if (e.target.value.length > 0 && index < inputRefs.current.length - 1) {
       inputRefs.current[index + 1].focus();
     }
-  }
+  };
 
-  // to come to to previous array for backspace key
-  const handleKeyDown =(e, index) =>{
-    if (e.key === 'Backspace' && e.target.value === '' && index > 0) {
+  // Move focus to previous input when backspace is pressed
+  const handleKeyDown = (e, index) => {
+    if (e.key === "Backspace" && e.target.value === "" && index > 0) {
       inputRefs.current[index - 1].focus();
     }
-  }
+  };
 
-  // to paste the otp in the otp form
-  const handlePaste = (e) =>{
-    const paste = e.clipboardData.getData('text')
-    const pasteArrafy = paste.split('');
-    pasteArrafy.forEach((char, index)=>{
+  // Handle OTP paste operation
+  const handlePaste = (e) => {
+    const paste = e.clipboardData.getData("text");
+    const pasteArray = paste.split("");
+    pasteArray.forEach((char, index) => {
       if (inputRefs.current[index]) {
         inputRefs.current[index].value = char;
       }
-    })
-  }
+    });
+  };
 
-  // function for the OTP verify
-  const onSubmitHandler = async(e) =>{
+  // Function to handle OTP submission
+  const onSubmitHandler = async (e) => {
     e.preventDefault();
     try {
-      const otpArray = inputRefs.current.map(e => e.value);
-      const otp = otpArray.join('');
+      const otpArray = inputRefs.current.map((input) => input.value);
+      const otp = otpArray.join("");
 
-      const {data} = await axios.post(`${url}/api/auth/verify-account`, {otp})
+      // Send OTP to verify the account
+      const { data } = await axios.post(`${url}/api/auth/verify-account`, { otp });
       if (data.success) {
         toast.success(data.message);
         getUserData();
-        navigate('/');
-      } else{
-        toast.error(data.message)
+        navigate("/");
+      } else {
+        toast.error(data.message);
       }
     } catch (error) {
-      toast(error.message)
+      toast.error(error.message || "Something went wrong!");
     }
-  } 
+  };
 
-  // prevent to go verify-email page if loggedin
-  useEffect(()=>{
-    isLoggedin && userData && userData.isAccountVerified && navigate('/')
-  },[isLoggedin, userData])
-
+  // Redirect to home if already logged in and account is verified
+  useEffect(() => {
+    if (isLoggedin && userData && userData.isAccountVerified) {
+      navigate("/");
+    }
+  }, [isLoggedin, userData, navigate]);
 
   return (
     <div className="flex items-center justify-center min-h-screen px-6 sm:px-0 bg-gradient-to-br from-blue-200 to-purple-400">
       <img
         onClick={() => navigate("/")}
         src={assets.logo}
-        alt=""
-        className="absolute left-5 sm:left-20 top-5 w-28 sm=w-32 cursor-pointer"
+        alt="Logo"
+        className="absolute left-5 sm:left-20 top-5 w-28 sm:w-32 cursor-pointer"
       />
       <form onSubmit={onSubmitHandler} className="bg-slate-900 p-8 rounded-lg shadow-lg w-96 text-sm">
-        <h1 className="text-white text-2xl front font-semibold text-center mb-4">Email Verify OTP</h1>
+        <h1 className="text-white text-2xl font-semibold text-center mb-4">Email Verify OTP</h1>
         <p className="text-center mb-6 text-indigo-300">Enter the 6-digit code sent to your email id</p>
         <div className="flex justify-between mb-8" onPaste={handlePaste}>
-          {Array(6).fill(0).map((_, index)=>(
-            <input className="w-12 h-12 bg-[#333A5C] text-white text-center text-xl rounded-md" type="text" maxLength='1' required key={index} ref={(e) => inputRefs.current[index] = e} onInput={(e) => handleInput(e, index)} onKeyDown={(e)=>handleKeyDown(e, index)}/>
-        
+          {Array(6).fill(0).map((_, index) => (
+            <input
+              className="w-12 h-12 bg-[#333A5C] text-white text-center text-xl rounded-md"
+              type="text"
+              maxLength="1"
+              required
+              key={index}
+              ref={(el) => (inputRefs.current[index] = el)}
+              onInput={(e) => handleInput(e, index)}
+              onKeyDown={(e) => handleKeyDown(e, index)}
+            />
           ))}
         </div>
-        <button className="w-full py-3 bg-gradient-to-r from-indigo-500 to-indigo-900 text-white rounded-full">Verify Email</button>
+        <button className="w-full py-3 bg-gradient-to-r from-indigo-500 to-indigo-900 text-white rounded-full">
+          Verify Email
+        </button>
       </form>
     </div>
   );
